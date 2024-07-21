@@ -1,0 +1,58 @@
+;; The first three lines of this file were inserted by DrRacket. They record metadata
+;; about the language level of this file in a form that our tools can easily process.
+#reader(lib "htdp-intermediate-lambda-reader.ss" "lang")((modname |last year final sol|) (read-case-sensitive #t) (teachpacks ((lib "image.rkt" "teachpack" "2htdp") (lib "universe.rkt" "teachpack" "2htdp") (lib "batch-io.rkt" "teachpack" "2htdp"))) (htdp-settings #(#t constructor repeating-decimal #f #t none #f ((lib "image.rkt" "teachpack" "2htdp") (lib "universe.rkt" "teachpack" "2htdp") (lib "batch-io.rkt" "teachpack" "2htdp")) #f)))
+
+;*********************Q1**************************************
+(define-struct EM (id sa dep))
+
+(define e1 (make-EM  222 4000 "a7a"))
+(define e2 (make-EM  221 5000 "a7a"))
+(define e3 (make-EM  224 2000 "s2tna"))
+(define EMP (list e1 e2 e3))
+;**********Q2********************************
+(define (findsalary ls x)
+  (cond
+    ((empty? ls ) 0)
+    ((= (EM-id (first ls))  x) ( + (EM-sa (first ls)) (findsalary (rest ls) x)))
+    (else (findsalary (rest ls) x))))
+
+
+(findsalary EMP 224)
+
+;*************Q3**********************************
+(define (finddeptlist ls x)
+  (cond
+    ((empty? ls ) empty)
+    ((string=? (EM-dep (first ls)) x) (cons (EM-id (first ls)) (finddeptlist (rest ls) x)))
+    (else (finddeptlist (rest ls) x))))
+
+
+(finddeptlist EMP "a7a")
+
+;***************Q4****************************************************************
+(define (Findsalary>3000 ls)
+  (local
+    ((define (salary ls1 acc)
+      (cond
+        ((empty? ls1) acc)
+        ((> (EM-sa (first ls1)) 3000) (salary (rest ls1) (+ (EM-sa (first ls1)) acc)))  
+        (else (salary (rest ls1) acc)))))
+        (salary ls 0)))
+
+
+(Findsalary>3000 EMP)
+
+;****************Q5****************************************************************
+(foldr + 0 (map (lambda (x) (EM-sa x)) (filter (lambda (x) (> (EM-sa x) 3000)) EMP)))
+
+
+;*******************Q6***************************************************************
+(define (howmany n ls)
+  (cond
+    ((empty? ls) 0)
+    ((= (first ls) n) (+ 1 (howmany  n (rest ls))) )
+    (else (howmany n (rest ls)))))
+
+(howmany 3 (list 1 2 3 4 5 3 3 3 ))
+
+
